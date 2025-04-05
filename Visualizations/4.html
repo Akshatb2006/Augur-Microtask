@@ -64,15 +64,12 @@ const activity = days.map(date => ({
 
 const tooltip = d3.select(".tooltip");
 
-// Layout
 const x = d => d3.timeWeek.count(start, d.date) * (boxSize + 2) + 40;
 const y = d => d.date.getDay() * (boxSize + 2);
 
-// Color scale
 const color = d3.scaleSequential(d3.interpolateYlGnBu)
   .domain([0, d3.max(activity, d => d.count)]);
 
-// Draw squares
 svg.selectAll("rect.day")
   .data(activity)
   .enter()
@@ -92,7 +89,6 @@ svg.selectAll("rect.day")
   })
   .on("mouseout", () => tooltip.style("opacity", 0));
 
-// Day labels
 ["Sun", "Tue", "Thu"].forEach((d, i) => {
   svg.append("text")
     .attr("class", "day-label")
@@ -102,7 +98,6 @@ svg.selectAll("rect.day")
     .text(d);
 });
 
-// Month labels
 const months = d3.timeMonths(start, end);
 months.forEach(month => {
   svg.append("text")
