@@ -1,0 +1,32 @@
+<!-- Radar Chart -->
+<svg width="400" height="400"></svg>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+const data = [ {axis: "Activity", value: 0.8}, {axis: "Responsiveness", value: 0.6}, {axis: "Growth", value: 0.9} ];
+
+const radius = 150;
+const svg = d3.select("svg").append("g").attr("transform", "translate(200,200)");
+
+const angleSlice = 2 * Math.PI / data.length;
+
+const line = d3.lineRadial()
+  .radius(d => d.value * radius)
+  .angle((d, i) => i * angleSlice);
+
+svg.append("path")
+  .datum(data)
+  .attr("d", line)
+  .attr("fill", "rgba(30,144,255,0.5)")
+  .attr("stroke", "dodgerblue")
+  .attr("stroke-width", 2);
+
+data.forEach((d, i) => {
+  const angle = angleSlice * i;
+  svg.append("text")
+    .attr("x", Math.cos(angle) * (radius + 10))
+    .attr("y", Math.sin(angle) * (radius + 10))
+    .text(d.axis)
+    .style("font-size", "12px")
+    .style("text-anchor", "middle");
+});
+</script>

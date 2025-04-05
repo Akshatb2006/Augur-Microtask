@@ -1,0 +1,22 @@
+<svg width="800" height="200"></svg>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+const issues = [
+  { id: "Issue 1", opened: new Date("2024-01-01"), closed: new Date("2024-01-05") },
+  { id: "Issue 2", opened: new Date("2024-01-02"), closed: new Date("2024-01-06") }
+];
+
+const svg = d3.select("svg");
+const x = d3.scaleTime().domain([new Date("2024-01-01"), new Date("2024-01-10")]).range([50, 750]);
+const y = d3.scaleBand().domain(issues.map(d => d.id)).range([20, 150]).padding(0.3);
+
+svg.append("g").call(d3.axisBottom(x)).attr("transform", "translate(0,170)");
+
+svg.selectAll("rect").data(issues).enter()
+  .append("rect")
+  .attr("x", d => x(d.opened))
+  .attr("y", d => y(d.id))
+  .attr("width", d => x(d.closed) - x(d.opened))
+  .attr("height", y.bandwidth())
+  .attr("fill", "#ff9933");
+</script>

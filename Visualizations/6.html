@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contributor Globe</title>
+  <script src="https://unpkg.com/globe.gl"></script>
+  <style>
+    body { margin: 0; background: #111; }
+    #globeViz { width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="globeViz"></div>
+  <script>
+    const globe = Globe()(document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .backgroundColor('#111')
+      .pointsData([
+        { lat: 37.7749, lng: -122.4194, size: 0.4, color: 'cyan', label: "San Francisco" },
+        { lat: 52.52, lng: 13.405, size: 0.4, color: 'orange', label: "Berlin" },
+        { lat: 28.6139, lng: 77.2090, size: 0.4, color: 'lime', label: "Delhi" }
+      ])
+      .pointAltitude('size')
+      .pointColor('color')
+      .pointLabel('label')
+      .autoRotate(true)
+      .autoRotateSpeed(1.2);
+  </script>
+</body>
+</html>

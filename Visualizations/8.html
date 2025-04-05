@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Review Velocity Gauge</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    text { font-family: sans-serif; fill: white; }
+  </style>
+</head>
+<body>
+  <svg width="300" height="200"></svg>
+  <script>
+    const svg = d3.select("svg");
+    const width = 300;
+    const height = 200;
+    const radius = 100;
+
+    const arc = d3.arc()
+      .innerRadius(70)
+      .outerRadius(radius)
+      .startAngle(-Math.PI / 2)
+      .endAngle(Math.PI / 2);
+
+    svg.append("path")
+      .attr("d", arc())
+      .attr("transform", `translate(${width/2}, ${height})`)
+      .attr("fill", "#333");
+
+    const scale = d3.scaleLinear().domain([0, 100]).range([-Math.PI/2, Math.PI/2]);
+    const value = 70; 
+
+    const needleAngle = scale(value);
+
+    svg.append("line")
+      .attr("x1", width/2)
+      .attr("y1", height)
+      .attr("x2", width/2 + Math.cos(needleAngle) * 70)
+      .attr("y2", height + Math.sin(needleAngle) * 70)
+      .attr("stroke", "lime")
+      .attr("stroke-width", 4);
+
+    svg.append("text")
+      .attr("x", width/2)
+      .attr("y", height + 30)
+      .attr("text-anchor", "middle")
+      .text(`${value}% Review Speed`);
+  </script>
+</body>
+</html>

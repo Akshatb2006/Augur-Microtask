@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Changelog Stream</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #1a1a1a; color: #fff; }
+    .tooltip {
+      position: absolute;
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 5px;
+      pointer-events: none;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="1000" height="150"></svg>
+  <div class="tooltip" style="opacity: 0;"></div>
+  <script>
+    const data = [
+      { date: new Date("2024-01-01"), type: "commit", msg: "Initial commit" },
+      { date: new Date("2024-01-10"), type: "pr", msg: "Added feature X" },
+      { date: new Date("2024-01-15"), type: "issue", msg: "Fixed bug Y" },
+    ];
+
+    const svg = d3.select("svg");
+    const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+    const width = svg.attr("width") - margin.left - margin.right;
+    const height = svg.attr("height") - margin.top - margin.bottom;
+
+    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleTime()
+      .domain(d3.extent(data, d => d.date))
+      .range([0, width]);
+
+    const iconColor = {
+      commit: "cyan",
+      pr: "orange",
+      issue: "lime"
+    };
+
+    g.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x));
+
+    const tooltip = d3.select(".tooltip");
+
+    g.selectAll("circle")
+      .data(data)
+      .enter().append("circle")
+      .attr("cx", d => x(d.date))
+      .attr("cy", height / 2)
+      .attr("r", 10)
+      .attr("fill", d => iconColor[d.type])
+      .on("mouseover", (event, d) => {
+        tooltip.style("opacity", 1)
+               .html(`<strong>${d.type.toUpperCase()}</strong>: ${d.msg}`)
+               .style("left", `${event.pageX + 5}px`)
+               .style("top", `${event.pageY - 28}px`);
+      })
+      .on("mouseout", () => tooltip.style("opacity", 0));
+  </script>
+</body>
+</html>

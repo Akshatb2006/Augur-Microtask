@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendar Heatmap</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+    svg {
+      max-width: 100%;
+    }
+    rect.day {
+      stroke: #eaeaea;
+      rx: 4;
+      ry: 4;
+      transition: 0.2s;
+    }
+    rect.day:hover {
+      stroke: #333;
+      stroke-width: 1.5px;
+      cursor: pointer;
+    }
+    .tooltip {
+      position: absolute;
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+      font-size: 13px;
+      pointer-events: none;
+      opacity: 0;
+      transition: 0.2s;
+    }
+    .month-label {
+      font-size: 12px;
+      fill: #999;
+    }
+    .day-label {
+      font-size: 11px;
+      fill: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="margin-bottom: 10px;">Community Activity (Calendar Heatmap)</h2>
+  <svg width="900" height="140"></svg>
+  <div class="tooltip"></div>
+
+<script>
+const svg = d3.select("svg");
+const boxSize = 15;
+const start = new Date("2024-01-01");
+const end = d3.timeDay.offset(start, 150);
+const days = d3.timeDays(start, end);
+
+const activity = days.map(date => ({
+  date,
+  count: Math.floor(Math.random() * 20)
+}));
+
+const tooltip = d3.select(".tooltip");
+
+// Layout
+const x = d => d3.timeWeek.count(start, d.date) * (boxSize + 2) + 40;
+const y = d => d.date.getDay() * (boxSize + 2);
+
+// Color scale
+const color = d3.scaleSequential(d3.interpolateYlGnBu)
+  .domain([0, d3.max(activity, d => d.count)]);
+
+// Draw squares
+svg.selectAll("rect.day")
+  .data(activity)
+  .enter()
+  .append("rect")
+  .attr("class", "day")
+  .attr("width", boxSize)
+  .attr("height", boxSize)
+  .attr("x", x)
+  .attr("y", y)
+  .attr("fill", d => color(d.count))
+  .on("mouseover", (event, d) => {
+    tooltip
+      .style("opacity", 1)
+      .style("left", event.pageX + 10 + "px")
+      .style("top", event.pageY - 20 + "px")
+      .html(`<strong>${d.date.toDateString()}</strong><br>${d.count} contributions`);
+  })
+  .on("mouseout", () => tooltip.style("opacity", 0));
+
+// Day labels
+["Sun", "Tue", "Thu"].forEach((d, i) => {
+  svg.append("text")
+    .attr("class", "day-label")
+    .attr("x", 0)
+    .attr("y", (i * 2 + 1) * (boxSize + 2))
+    .attr("dy", "0.9em")
+    .text(d);
+});
+
+// Month labels
+const months = d3.timeMonths(start, end);
+months.forEach(month => {
+  svg.append("text")
+    .attr("class", "month-label")
+    .attr("x", x({ date: month }))
+    .attr("y", 10)
+    .text(d3.timeFormat("%b")(month));
+});
+</script>
+</body>
+</html>
