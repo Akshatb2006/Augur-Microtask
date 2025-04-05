@@ -1,4 +1,4 @@
-# 🔍 CHAOSS Augur Microtasks – D3.js Visualizations
+# 🔍 CHAOSS Augur – D3.js Visualizations
 
 Welcome to a collection of sleek, interactive **D3.js visualizations** crafted for [CHAOSS Augur](https://chaoss.community/augur) as part of my **Google Summer of Code (GSoC)** microtasks.
 
